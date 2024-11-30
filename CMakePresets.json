@@ -1,0 +1,99 @@
+{
+	"version": 3,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 19,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "default",
+			"hidden": true,
+			"generator": "Ninja"
+		},
+		{
+			"name": "debug-linux",
+			"inherits": "default",
+			"description": "Debug build (build static)",
+			"binaryDir": "${sourceDir}/build/debug",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug",
+				"BUILD_SHARED_LIBS": "OFF",
+				"CMAKE_CXX_FLAGS": "-O0 -g",
+				"CMAKE_C_FLAGS": "-O0 -g"
+			}
+		},
+		{
+			"name": "debug-linux w/ fsanitize",
+			"inherits": "default",
+			"description": "Debug build with fsanitize (build static)",
+			"binaryDir": "${sourceDir}/build/debugSanitize",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug",
+				"BUILD_SHARED_LIBS": "OFF",
+				"CMAKE_CXX_FLAGS": "-fsanitize=address -O0 -g",
+				"CMAKE_C_FLAGS": "-fsanitize=address -O0 -g"
+			}
+		},
+		{
+			"name": "full-release-linux",
+			"inherits": "default",
+			"description": "Release build, -O3 & BUILD_SHARED",
+			"binaryDir": "${sourceDir}/build/fullrelease",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release",
+				"BUILD_SHARED_LIBS": "ON",
+				"CMAKE_CXX_FLAGS": "-O3 -Wall -Wextra",
+				"CMAKE_C_FLAGS": "-O3 -Wall -Wextra"
+			}
+		},
+		{
+			"name": "debug-windows-ninja",
+			"inherits": "default",
+			"description": "Debug build (build shared) with NINJA",
+			"generator": "Ninja",
+			"binaryDir": "${sourceDir}/build/debug",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug",
+				"BUILD_SHARED_LIBS": "OFF",
+				"CMAKE_C_COMPILER": "cl",
+				"CMAKE_CXX_COMPILER": "cl",
+				"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+			},
+			"toolset": {
+				"value": "host=x64",
+				"strategy": "external"
+			},
+			"vendor": {
+				"microsoft.com/VisualStudioSettings/CMake/1.0": {
+					"hostOS": ["Windows"],
+					"intelliSenseMode": "windows-msvc-x64"
+				}
+			}
+		},
+		{
+			"name": "release-windows-ninja",
+			"inherits": "default",
+			"description": "Release build (build shared) with NINJA",
+			"generator": "Ninja",
+			"binaryDir": "${sourceDir}/build/release",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release",
+				"BUILD_SHARED_LIBS": "ON",
+				"CMAKE_C_COMPILER": "cl",
+				"CMAKE_CXX_COMPILER": "cl",
+				"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+			},
+			"toolset": {
+				"value": "host=x64",
+				"strategy": "external"
+			},
+			"vendor": {
+				"microsoft.com/VisualStudioSettings/CMake/1.0": {
+					"hostOS": ["Windows"],
+					"intelliSenseMode": "windows-msvc-x64"
+				}
+			}
+		}
+	]
+}
