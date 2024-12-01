@@ -31,7 +31,8 @@ function(add_day_solution DAY_NAME)
     add_executable(${PROJECT_NAME} ${DAY_NAME}/main.cpp)
 endfunction()
 
-add_day_solution(day0)
+#add_day_solution(day0)
+add_day_solution(day1)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE utilsraylib)
 
