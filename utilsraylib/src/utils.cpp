@@ -30,11 +30,11 @@ std::vector<std::string> splitString(const std::string& str, const std::string& 
 	size_t start = 0;
 	size_t end = str.find(delimiter);
 	while (end != -1) {
-		strings.push_back(str.substr(start, end - start));
+		strings.emplace_back(str.substr(start, end - start));
 		start = end + delimiter.size();
 		end = str.find(delimiter, start);
 	}
-	strings.push_back(str.substr(start, end - start));
+	strings.emplace_back(str.substr(start, end - start));
 
 	return strings;
 }
