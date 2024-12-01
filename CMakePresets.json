@@ -52,7 +52,7 @@
 			"inherits": "default",
 			"description": "Debug build (build shared) with NINJA",
 			"generator": "Ninja",
-			"binaryDir": "${sourceDir}/build/debug",
+			"binaryDir": "${sourceDir}/build/",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Debug",
 				"BUILD_SHARED_LIBS": "OFF",
@@ -67,7 +67,7 @@
 			"vendor": {
 				"microsoft.com/VisualStudioSettings/CMake/1.0": {
 					"hostOS": ["Windows"],
-					"intelliSenseMode": "windows-msvc-x64"
+					"intelliSenseMode": "windows-clang-x64"
 				}
 			}
 		},
@@ -76,10 +76,10 @@
 			"inherits": "default",
 			"description": "Release build (build shared) with NINJA",
 			"generator": "Ninja",
-			"binaryDir": "${sourceDir}/build/release",
+			"binaryDir": "${sourceDir}/build/",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release",
-				"BUILD_SHARED_LIBS": "ON",
+				"BUILD_SHARED_LIBS": "OFF",
 				"CMAKE_C_COMPILER": "cl",
 				"CMAKE_CXX_COMPILER": "cl",
 				"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
@@ -91,7 +91,7 @@
 			"vendor": {
 				"microsoft.com/VisualStudioSettings/CMake/1.0": {
 					"hostOS": ["Windows"],
-					"intelliSenseMode": "windows-msvc-x64"
+					"intelliSenseMode": "windows-clang-x64"
 				}
 			}
 		}
