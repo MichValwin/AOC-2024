@@ -8,7 +8,7 @@
 #include <utils.hpp>
 #include <chrono>
 
-static const char* INPUT_FILE = "./day3/bigboy.txt";
+static const char* INPUT_FILE = "./day3/input.txt";
 static const char* DEMO_FILE = "./day3/demo.txt";
 static const bool USE_REAL_DATA = true;
 
@@ -78,7 +78,8 @@ int main() {
     ParseToken dontToken = {"don't()", 0, false, 0};
 
     u32 mulA = 0, mulB = 0;
-    u64 total = 0;
+    u64 totalSilver = 0;
+    u64 totalGold = 0;
     u64 timeFinishProblem = getTimeNanoSinceEpoch();
     bool enabled = true;
 
@@ -106,7 +107,8 @@ int main() {
                         mulToken.index+=2;
                         mulToken.specialTokenAt++;
                     }else{
-                        if(enabled)total += mulA*mulB;
+                        totalSilver += mulA*mulB;
+                        if(enabled)totalGold += mulA*mulB;
                         mulToken.specialTokenAt = 0;
                         mulToken.index = 0;
                         mulA = 0;
@@ -152,7 +154,8 @@ int main() {
     }
     
     printf("Time to finish problem: %lfms\n", (f64)(getTimeNanoSinceEpoch() - timeFinishProblem) / 1e6);
-    printf("Total Silver: %lld\n", total);
+    printf("Total Silver: %lld\n", totalSilver);
+    printf("Total Gold: %lld\n", totalGold);
 
     /*
     std::string line;
