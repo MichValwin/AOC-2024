@@ -70,8 +70,6 @@ int main() {
     }
     printf("Time to read file: %lfms\n", (f64)(getTimeNanoSinceEpoch() - timeStartFetch) / 1e6);
 
-
-
     
     ParseToken mulToken = {"mul(\1,\1)", 0, false, 0};
     ParseToken doToken = {"do()", 0, false, 0};
