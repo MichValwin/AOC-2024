@@ -31,7 +31,7 @@ struct Grid {
     }
 
     bool isPositionAllowed(u32 x, u32 y) const {
-        if(x < 0 || x >= width || y < 0 || y >= height) return false;
+        if(x < 0 || x >= width || y < 0 || y >= height ) return false;
         return true;
     }
 
@@ -101,9 +101,11 @@ u32 getSilver(const Grid& grid) {
                 }
     };
 
+    /*
     Grid gdebug;
     gdebug.initialize(grid.width, grid.height);
     gdebug.writeAllPoints();
+    */
 
     u32 total = 0;
 
@@ -132,7 +134,7 @@ u32 getSilver(const Grid& grid) {
                         }
 
                         if(wordIdx == word.word.size()) {
-                            setWordToAnotherGrid(grid, gdebug, {x, y}, d);
+                            //setWordToAnotherGrid(grid, gdebug, {x, y}, d);
                             total++;
                         }
                     }
@@ -142,15 +144,17 @@ u32 getSilver(const Grid& grid) {
         }
     }
 
-    gdebug.printToPrintf();
+    //gdebug.printToPrintf();
 
     return total;
 }
 
 u32 getGold(const Grid& grid) {
+    /*
     Grid gdebug;
     gdebug.initialize(grid.width, grid.height);
     gdebug.writeAllPoints();
+    */
 
     u32 total = 0;
 
@@ -169,28 +173,22 @@ u32 getGold(const Grid& grid) {
                 u8 checkdSides = 0;
                 for(u8 i = 0; i < dirs.size(); i++) {
                     const Direction d = dirs[i];
+
                     Position nextPos = {x+d.x, y+d.y};
-
-                    std::vector<char> toCheck = {'S', 'M'};
-
                     if(!grid.isPositionAllowed(nextPos.x, nextPos.y)) break;
-                    
-                    char c = grid.get(nextPos.x, nextPos.y);
-                    auto it = std::find(toCheck.begin(), toCheck.end(), c);
-                    if(it != toCheck.end()) {
-                        toCheck.erase(it);
-                        // If  it contains the char we need to chekc in the reverse direction
-                        Direction dRevers = dirs[i];
-                        dRevers.x = -dRevers.x;
-                        dRevers.y = -dRevers.y;
+                    char c1 = grid.get(nextPos.x, nextPos.y);
 
-                        nextPos = {x+dRevers.x, y+dRevers.y};
-                        if(!grid.isPositionAllowed(nextPos.x, nextPos.y)) break;
-                        c = grid.get(nextPos.x, nextPos.y);
-                        if(c == toCheck[0]){
-                            checkdSides++;
-                        }
-                    }
+                    Direction dRevers = dirs[i];
+                    dRevers.x = -dRevers.x;
+                    dRevers.y = -dRevers.y;
+                    nextPos = {x+dRevers.x, y+dRevers.y};
+                    if(!grid.isPositionAllowed(nextPos.x, nextPos.y)) break;
+                    char c2 = grid.get(nextPos.x, nextPos.y);
+
+                    u8 totNumCharsEq = 0;
+                    if(c1 == 'M' || c2 == 'M')totNumCharsEq++;
+                    if(c1 == 'S' || c2 == 'S')totNumCharsEq++;
+                    if(totNumCharsEq == 2)checkdSides++;
                 }
 
                 if(checkdSides == 2) {
@@ -201,7 +199,7 @@ u32 getGold(const Grid& grid) {
                         {-1, -1},
                         {-1, 1}
                     };
-                    setMasX(grid, gdebug, {x, y}, dirs);
+                    //setMasX(grid, gdebug, {x, y}, dirs);
                 }
                 
             }
@@ -209,7 +207,7 @@ u32 getGold(const Grid& grid) {
         }
     }
 
-    gdebug.printToPrintf();
+    //gdebug.printToPrintf();
 
     return total;
 }
@@ -222,6 +220,7 @@ inline u64 getTimeNanoSinceEpoch() {
 
 int main() {
     printf("DAY4\n");
+    u64 parseInput = getTimeNanoSinceEpoch();
     if(USE_REAL_DATA) {
         printf("Using REAL INPUT from: %s\n", INPUT_FILE);
     } else {
@@ -235,9 +234,8 @@ int main() {
         return -1;
     }
 
-
+    u64 timeFinishProblem = getTimeNanoSinceEpoch();
     Grid grid;
-
     std::vector<std::string> gridStr;
     std::string line;
     while(std::getline(inputFile, line)) {
@@ -250,8 +248,11 @@ int main() {
             grid.set(x, y, c);
         }
     }
-    grid.printToPrintf();
+    //grid.printToPrintf();
+    printf("Time to parse input and build grid: %lfms\n", (f64)(getTimeNanoSinceEpoch() - parseInput) / 1e6);
 
-    printf("Silver: %lld\n", getSilver(grid));
-    printf("Gold: %lld\n", getGold(grid));
+
+    printf("Silver: %d\n", getSilver(grid));
+    printf("Gold: %d\n", getGold(grid));
+    printf("Time to finish problem: %lfms\n", (f64)(getTimeNanoSinceEpoch() - timeFinishProblem) / 1e6);
 }
