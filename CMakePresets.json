@@ -15,7 +15,7 @@
 			"name": "debug-linux",
 			"inherits": "default",
 			"description": "Debug build (build static)",
-			"binaryDir": "${sourceDir}/build/debug",
+			"binaryDir": "${sourceDir}/build/",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Debug",
 				"BUILD_SHARED_LIBS": "OFF",
@@ -27,7 +27,7 @@
 			"name": "debug-linux w/ fsanitize",
 			"inherits": "default",
 			"description": "Debug build with fsanitize (build static)",
-			"binaryDir": "${sourceDir}/build/debugSanitize",
+			"binaryDir": "${sourceDir}/build/",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Debug",
 				"BUILD_SHARED_LIBS": "OFF",
@@ -39,7 +39,7 @@
 			"name": "full-release-linux",
 			"inherits": "default",
 			"description": "Release build, -O3 & BUILD_SHARED",
-			"binaryDir": "${sourceDir}/build/fullrelease",
+			"binaryDir": "${sourceDir}/build/",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release",
 				"BUILD_SHARED_LIBS": "ON",

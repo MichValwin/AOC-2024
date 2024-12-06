@@ -1,6 +1,7 @@
 #include "utils.hpp"
 #include <string>
 #include <cstring>
+#include <algorithm>
 
 Vector3 getMiddlePosition(const Rectangle& bounds) {
 	return {bounds.x + bounds.width/2, bounds.y + bounds.height/2, 0};

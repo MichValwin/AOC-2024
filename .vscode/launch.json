@@ -17,7 +17,7 @@
             "name": "Debug linux",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/AOC2024.exe",
+            "program": "${workspaceFolder}/build/bin/AOC2024",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
