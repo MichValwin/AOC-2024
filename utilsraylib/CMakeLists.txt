@@ -29,7 +29,7 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/raylib")
 # Add library
 add_library(utilsraylib
 	src/utils.cpp
-	src/VirtualResWindow.cpp
+	src/virtualResWindow.cpp
 )
 
 # Link Raylib to the library
