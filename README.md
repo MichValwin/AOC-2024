@@ -2,6 +2,7 @@
 
 # Setup
 ## Libraries for Raylib linux
+Init raylib submodule with: ``
 
 ## Setup for vscode/codium
 - Install cmake & cmaketools extensions
