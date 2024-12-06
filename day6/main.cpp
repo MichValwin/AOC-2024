@@ -88,17 +88,46 @@ struct Position {
     u32 x, y;
 };
 
+const Direction DIRS_TO_ROTATE90[] = {
+    {0, -1}, // UP
+    {1, 0}, // RIGHT
+    {0, 1}, // DOWN
+    {-1, 0} // LEFT
+};
+
+enum DIRECTION {
+    UP = 0, RIGHT, DOWN, LEFT
+};
+
 struct Guard {
     Position p;
-    Direction d;
+    u8 d;
 
     bool operator<(const Guard& o) const {
         // Pos
         if(p.x != o.p.x) return p.x < o.p.x;
         if(p.y != o.p.y) return p.y < o.p.y;
         // Dir
-        if(d.x != o.d.x) return d.x < o.d.x;
-        return d.y < o.d.y;
+        return d < o.d;
+    }
+
+    bool operator==(const Guard& o) const {
+        return p.x == o.p.x && p.y == o.p.y && d == o.d;
+    }
+};
+
+struct Guardhash {
+    std::size_t operator()(const Guard& g) const noexcept {
+        // Combine the hash values of the members
+        return (std::hash<int>()(g.p.x) ^
+                std::hash<int>()(g.p.y) << 1) ^
+                std::hash<int>()(g.d);
+    }
+};
+
+struct GuardEqual {
+    bool operator()(const Guard& a, const Guard& b) const {
+        return a.p.x == b.p.x && a.p.y == b.p.y && a.d == b.d;
     }
 };
 
@@ -109,22 +138,16 @@ inline u64 getTimeNanoSinceEpoch() {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(time_point_now.time_since_epoch()).count();
 }
 
+
 void rotate(Guard& g) {
-    if(g.d.x == 1 && g.d.y == 0) {
-        g.d = {0, 1};
-    }else if(g.d.x == -1 && g.d.y == 0) {
-        g.d = {0, -1};
-    }else if(g.d.x == 0 && g.d.y == -1) {
-        g.d = {1, 0};
-    }else {
-        g.d = {-1, 0};
-    }
+    g.d = (g.d+1) % 4;
 }
 
 void moveGuard(const Grid& grid, Guard& guard) {
     Position nextPos;
-    nextPos.x = guard.p.x+guard.d.x;
-    nextPos.y = guard.p.y+guard.d.y;
+    Direction dir = DIRS_TO_ROTATE90[guard.d];
+    nextPos.x = guard.p.x+dir.x;
+    nextPos.y = guard.p.y+dir.y;
 
     if(grid.isPositionAllowed(nextPos.x, nextPos.y)) {
         char c = grid.get(nextPos.x, nextPos.y);
@@ -158,9 +181,6 @@ u32 getSilver(const Grid& grid, const Guard& guard) {
 size_t getGold(const Grid& grid, const Guard& guard) {
     Grid gCopy = grid.copy();
     std::vector<Position> obstacles;
-    
-    u64 totalToCheck = gCopy.width*gCopy.height;
-    f32 percent = 1;
 
     for(u32 y = 0; y < gCopy.height; y++) {
         for(u32 x = 0; x < gCopy.width; x++) {
@@ -168,7 +188,7 @@ size_t getGold(const Grid& grid, const Guard& guard) {
             if(grid.get(x, y) == '#' || (guard.p.x == x && guard.p.y == y)) continue; // Cant be in a obstruction or in the guard initial pos
 
             Guard guardC = {guard.p, guard.d};
-            std::set<Guard> positionsGuardHasbeen;
+            std::unordered_set<Guard, Guardhash, GuardEqual> positionsGuardHasbeen;
 
             gCopy.set(x, y, 'O');
             while(grid.isPositionAllowed(guardC.p.x, guardC.p.y)) {
@@ -181,14 +201,6 @@ size_t getGold(const Grid& grid, const Guard& guard) {
                 }
             }
             gCopy.set(x, y, '.');
-
-
-            u64 posChecked = totalToCheck-(x+(y*gCopy.width));
-            f32 newPercent = (f32)posChecked/(f32)totalToCheck;
-            if(percent-newPercent > 0.01) {
-                percent = newPercent;
-                printf("Percent completion: %f\n", percent);
-            }
         }
     }
     
@@ -225,7 +237,7 @@ int main() {
         for(u32 x = 0; x < gridStr[y].size(); x++) {
             char c = gridStr[y][x];
             if(c == '^') {
-                guard = {{x, y}, {0, -1}};
+                guard = {{x, y}, UP};
                 grid.set(x, y, '.');
             }else{
                 grid.set(x, y, c);
@@ -236,8 +248,8 @@ int main() {
 
     printf("Time to parse input and build grid: %lfms\n", (f64)(getTimeNanoSinceEpoch() - parseInput) / 1e6);
 
-
+    u64 timeFinishProblem = getTimeNanoSinceEpoch();
     printf("Silver: %d\n", getSilver(grid, guard));
     printf("Gold: %lld\n", getGold(grid, guard));
-    //printf("Time to finish problem: %lfms\n", (f64)(getTimeNanoSinceEpoch() - timeFinishProblem) / 1e6);
+    printf("Time to finish problem: %lfms\n", (f64)(getTimeNanoSinceEpoch() - timeFinishProblem) / 1e6);
 }
