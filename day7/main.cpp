@@ -62,18 +62,10 @@ s64 recursiveGold(const MathOp& op, u64 res, u8 idx) {
     }
 }
 
-bool bruteforceOperationSilver(const MathOp& op) {
-    return recursive(op, op.operands[0], 1) == op.result;
-}
-
-bool bruteforceOperationGold(const MathOp& op) {
-    return recursiveGold(op, op.operands[0], 1) == op.result;
-}
-
 u64 getSilver(const std::vector<MathOp>& ops) {
     u64 total = 0;
     for(const MathOp& op: ops) {
-        if(bruteforceOperationSilver(op)) total += op.result;
+        if(recursive(op, op.operands[0], 1) == op.result) total += op.result;
     }
     return total;
 }
@@ -81,7 +73,7 @@ u64 getSilver(const std::vector<MathOp>& ops) {
 size_t getGold(const std::vector<MathOp>& ops) {
     u64 total = 0;
     for(const MathOp& op: ops) {
-        if(bruteforceOperationGold(op)) total += op.result;
+        if(recursiveGold(op, op.operands[0], 1) == op.result) total += op.result;
     }
     return total;
 }
