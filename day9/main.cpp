@@ -204,11 +204,7 @@ int main() {
             i++;
         }
 
-        if(isData)  {
-            id++;
-        }else{
-            
-        }
+        if(isData)id++;
 
         isData = !isData;
     }
