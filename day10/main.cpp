@@ -13,7 +13,7 @@
 #include <utils.hpp>
 #include <chrono>
 
-static const char* INPUT_FILE = "./day10/input.txt";
+static const char* INPUT_FILE = "./day10/bigboy.txt";
 static const char* DEMO_FILE = "./day10/demo.txt";
 static const bool USE_REAL_DATA = true;
 
@@ -134,7 +134,7 @@ u64 getSilver(const Grid& grid) {
                     // If we reach said level, it is a trail
                     char actualLevel = grid.get(p.x, p.y);
                     if(actualLevel == '9') {
-                        printf("Reach 9: {%d, %d}\n", p.x, p.y);
+                        //printf("Reach 9: {%d, %d}\n", p.x, p.y);
                         numTrails++;
                         continue;
                     }
@@ -178,20 +178,16 @@ u64 getGold(const Grid& grid) {
                 u32 numTrails = 0;
 
                 std::stack<Position> toVisit;
-                std::set<Position> visited;
                 toVisit.push({x, y});
 
                 while(!toVisit.empty()) {
                     Position p = toVisit.top();
                     toVisit.pop();
-
-                    //if(visited.find(p) != visited.end()) continue;
-                    //visited.insert(p);
                     
                     // If we reach said level, it is a trail
                     char actualLevel = grid.get(p.x, p.y);
                     if(actualLevel == '9') {
-                        printf("Reach 9: {%d, %d}\n", p.x, p.y);
+                        //printf("Reach 9: {%d, %d}\n", p.x, p.y);
                         numTrails++;
                         continue;
                     }
@@ -256,7 +252,7 @@ int main() {
             grid.set(x, y, c);
         }
     }
-    grid.printToPrintf();
+    //grid.printToPrintf();
 
 
     printf("Time to parse input and build grid: %lfms\n", (f64)(getTimeNanoSinceEpoch() - parseInput) / 1e6);
