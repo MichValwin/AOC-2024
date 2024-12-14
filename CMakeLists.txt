@@ -42,7 +42,8 @@ endfunction()
 #add_day_solution(day8)
 #add_day_solution(day9)
 #add_day_solution(day10)
-add_day_solution(day11)
+#add_day_solution(day11)
+add_day_solution(day12)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE utilsraylib)
 
