@@ -11,7 +11,7 @@
 
 static const char* INPUT_FILE = "./day12/input.txt";
 static const char* DEMO_FILE = "./day12/demo.txt";
-static const bool USE_REAL_DATA = false;
+static const bool USE_REAL_DATA = true;
 
 
 
@@ -88,7 +88,7 @@ struct Direction {
 };
 
 struct Position {
-    u32 x, y;
+    s32 x, y;
 
     bool operator<(const Position& o) const {
         if(x != o.x) return x < o.x;
@@ -100,10 +100,29 @@ struct Position {
     }
 };
 
+struct Perimeter {
+    Position pos;
+    Direction dir;
+
+
+    bool operator==(const Perimeter& o) const {
+        return dir.x == o.dir.x && dir.y == o.dir.y && (pos.x == o.pos.x || pos.y == o.pos.y);
+    }
+
+    bool operator<(const Perimeter& o) const {
+        if(pos.x != o.pos.x) return pos.x < o.pos.x;
+        if(pos.y != o.pos.y) return pos.y < o.pos.y;
+        if(dir.x != o.dir.x) return dir.x < o.dir.x;
+        return dir.y < o.dir.y;
+    }
+
+};
+
 inline u64 getTimeNanoSinceEpoch() {
     auto time_point_now = std::chrono::high_resolution_clock::now();
     return std::chrono::duration_cast<std::chrono::nanoseconds>(time_point_now.time_since_epoch()).count();
 }
+
 
 u64 silver(const Grid& grid) {
     std::set<Position> visited;
@@ -116,13 +135,21 @@ u64 silver(const Grid& grid) {
         {-1, 0}
     };
 
-    for(u32 y = 0; y < grid.height; y++) {
-        for(u32 x = 0; x < grid.width; x++) {
+    for(s32 y = 0; y < grid.height; y++) {
+        for(s32 x = 0; x < grid.width; x++) {
             char c = grid.get(x, y);
             Position p = {x, y};
-            if(visited.find(p) == visited.end()) {
-                visited.insert(p);
 
+            // A perimeter
+            // X: 10, y: 4, dir: 0, 1
+            // X: 11, y: 4, dir: 0, 1
+            // Counts as 1
+
+            // X: 12, y: 4, dir: 1, 0
+            // Counts as anothers 1
+
+            if(visited.find(p) == visited.end()) {
+                // New region
                 // Get area and perimeter
                 std::queue<Position> toVisit;
                 toVisit.emplace(p);
@@ -131,9 +158,11 @@ u64 silver(const Grid& grid) {
                 while(!toVisit.empty()) {
                     Position pc = toVisit.front();
                     toVisit.pop();
+                    if(visited.find(pc) != visited.end())continue;
+                    
                     visited.insert(pc);
-
                     area++;
+
                     for(u8 d = 0; d < 4; d++) {
                         Direction dir = DIRS[d];
                         Position nextP = {pc.x+dir.x, pc.y+dir.y};
@@ -161,8 +190,104 @@ u64 silver(const Grid& grid) {
     return total;
 }
 
+
 u64 gold(const Grid& grid) {
-    return 1;
+    std::set<Position> visited;
+    u64 total = 0;
+
+    Direction DIRS[4] = {
+        {0, -1},
+        {1, 0},
+        {0, 1},
+        {-1, 0}
+    };
+
+    for(s32 y = 0; y < grid.height; y++) {
+        for(s32 x = 0; x < grid.width; x++) {
+            char c = grid.get(x, y);
+            Position p = {x, y};
+
+            if(visited.find(p) == visited.end()) {
+                // New region
+                // Get area and perimeter
+                std::queue<Position> toVisit;
+                toVisit.emplace(p);
+                u32 area = 0;
+                std::set<Perimeter> perimeterSet;
+
+                while(!toVisit.empty()) {
+                    Position pc = toVisit.front();
+                    toVisit.pop();
+                    if(visited.find(pc) != visited.end())continue;
+                    
+                    visited.insert(pc);
+                    area++;
+
+                    for(u8 d = 0; d < 4; d++) {
+                        Direction dir = DIRS[d];
+                        Position nextP = {pc.x+dir.x, pc.y+dir.y};
+                        if(grid.isPositionAllowed(nextP.x, nextP.y)) {
+                            char cn = grid.get(nextP.x, nextP.y);
+                            if(cn == c) {
+                                if(visited.find(nextP) == visited.end()) {
+                                    toVisit.push(nextP);
+                                }
+                            }else{
+                                Perimeter per = {nextP, dir};
+                                if(perimeterSet.find(per) == perimeterSet.end())perimeterSet.emplace(per);
+                            }
+                        }else{
+                            Perimeter per = {nextP, dir};
+                            if(perimeterSet.find(per) == perimeterSet.end())perimeterSet.emplace(per);
+                        }
+                    }
+                }
+
+                // Count perimeter
+                u32 perimeterTotal = 0;
+
+                std::set<Perimeter> visitedPer;
+                for(const Perimeter& per: perimeterSet) {
+                    std::queue<Perimeter> qPer;
+                    if(visitedPer.find(per) == visitedPer.end()){
+                        qPer.emplace(per);
+                        
+
+                        u32 perimeter = 1;
+                        while(!qPer.empty()) {
+                            Perimeter per = qPer.front();
+                            qPer.pop();
+                            if(visitedPer.find(per) != visitedPer.end())continue;
+                            visitedPer.emplace(per);
+                            Direction dirPer = per.dir;
+
+                            for(u8 d = 0; d < 4; d++) {
+                                Position nextPerPos = {per.pos.x+DIRS[d].x,per.pos.y+DIRS[d].y };
+                                Perimeter nextPer = {nextPerPos, dirPer};
+
+                                if(perimeterSet.find(nextPer) != perimeterSet.end()) {
+                                    qPer.emplace(nextPer);
+                                }
+
+                            }
+                        }
+
+                        perimeterTotal += perimeter;
+
+                    }
+                    
+
+
+
+                }
+
+                total += area*perimeterTotal;
+                printf("A region of %c plants with price %d * %d = %d\n", c, area, perimeterTotal, area*perimeterTotal);
+            }
+        }
+    }
+
+    return total;
 }
 
 int main() {
